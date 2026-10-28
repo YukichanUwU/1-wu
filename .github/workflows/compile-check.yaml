@@ -19,4 +19,16 @@ jobs:
       shell: pwsh
       run: |
         Set-ExecutionPolicy Bypass -Scope Process -Force; ./Compile.ps1
-      continue-on-error: false # Directly fail the job on error, removing the need for a separate check
+      continue-on-error: false
+
+    - name: Convert to EXE
+      shell: pwsh
+      run: |
+        Install-Module ps2exe -Scope CurrentUser -Force
+        Invoke-PS2EXE -InputFile ".\winutil.ps1" -OutputFile ".\winutil.exe" -RequireAdmin -NoConsole
+
+    - name: Upload EXE Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: winutil-exe
+        path: winutil.exe
